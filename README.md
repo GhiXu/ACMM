@@ -10,4 +10,4 @@
 }
 ```
 ## SfM Outputs for Tanks and Temples Dataset
-To faciliacte other MVS methods to compare with our method on [Tanks and Temples dataset](https://www.tanksandtemples.org/), we release our SfM reconstuctions on this dataset. They are obtained by COLMAP and can be downloaded from [here](https://drive.google.com/open?id=1DTnnmJAOGt7WPXSLMysMvPTy4CUZt_TU).
+To faciliacte other MVS methods to compare with our method on [Tanks and Temples dataset](https://www.tanksandtemples.org/), we release our SfM reconstuctions on this dataset. They are obtained by [COLMAP](https://colmap.github.io/) and can be downloaded from [here](https://drive.google.com/open?id=1DTnnmJAOGt7WPXSLMysMvPTy4CUZt_TU).
