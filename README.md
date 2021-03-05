@@ -24,7 +24,7 @@ make
 ```
 * Test 
 ``` 
-Use script colmap2mvsnet_acm.py to convert COLMAP SfM result to ACMP input   
+Use script colmap2mvsnet_acm.py to convert COLMAP SfM result to ACMM input   
 Run ./ACMM $data_folder to get reconstruction results
 ```
 ## SfM Reconstructions for Tanks and Temples Dataset
