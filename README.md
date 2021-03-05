@@ -16,7 +16,7 @@ The code has been tested on Ubuntu 14.04 with GTX Titan X.
 * [OpenCV](https://opencv.org/) >= 2.4
 * [cmake](https://cmake.org/)
 ## Usage
-* Complie ACMP
+* Complie ACMM
 ```  
 cmake .  
 make
