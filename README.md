@@ -1,5 +1,5 @@
 # ACMM
-[News] The code for [ACMP](https://github.com/GhiXu/ACMP) is released!!! The implementation of ACMH is included in ACMP.
+[News] The code for [ACMP](https://github.com/GhiXu/ACMP) is released!!!
 ## About
 [ACMM](https://arxiv.org/abs/1904.08103) is a multi-scale geometric consistency guided multi-view stereo method for efficient and accurate depth map estimation. If you find this project useful for your research, please cite:  
 ```
