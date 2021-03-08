@@ -17,7 +17,7 @@ The code has been tested on Ubuntu 14.04 with GTX Titan X.
 * [OpenCV](https://opencv.org/) >= 2.4
 * [cmake](https://cmake.org/)
 ## Usage
-* Complie ACMM
+* Compile ACMM
 ```  
 cmake .  
 make
@@ -28,6 +28,6 @@ Use script colmap2mvsnet_acm.py to convert COLMAP SfM result to ACMM input
 Run ./ACMM $data_folder to get reconstruction results
 ```
 ## SfM Reconstructions for Tanks and Temples Dataset
-To faciliacte other MVS methods to compare with our method on [Tanks and Temples dataset](https://www.tanksandtemples.org/), we release our SfM reconstuctions on this dataset. They are obtained by [COLMAP](https://colmap.github.io/) and can be downloaded from [here](https://drive.google.com/open?id=1DTnnmJAOGt7WPXSLMysMvPTy4CUZt_TU).
-## Acknowledgemets
+To ease comparison with other MVS methods with our method on [Tanks and Temples dataset](https://www.tanksandtemples.org/), we release our SfM reconstuctions on this dataset. They are obtained by [COLMAP](https://colmap.github.io/) and can be downloaded from [here](https://drive.google.com/open?id=1DTnnmJAOGt7WPXSLMysMvPTy4CUZt_TU).
+## Acknowledgements
 This code largely benefits from the following repositories: [Gipuma](https://github.com/kysucix/gipuma) and [COLMAP](https://colmap.github.io/). Thanks to their authors for opening source of their excellent works.
