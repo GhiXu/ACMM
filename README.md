@@ -27,6 +27,10 @@ make
 Use script colmap2mvsnet_acm.py to convert COLMAP SfM result to ACMM input   
 Run ./ACMM $data_folder to get reconstruction results
 ```
+## Results on high-res ETH3D training dataset [2cm]
+| Mean   | courtyard | delivery_area | electro | facade | kicker | meadow | office | pipes  | playgroud | relief | relief_2 | terrace | terrains |
+|--------|-----------|---------------|---------|--------|--------|--------|--------|--------|-----------|--------|----------|---------|----------|
+| 78.87  | 87.47     | 83.70         | 86.82   | 70.79  | 77.51  | 66.41  | 64.88	 | 70.07  | 72.06     | 85.36  | 84.87    | 89.85	  | 85.52    |
 ## SfM Reconstructions for Tanks and Temples Dataset
 To ease comparison with other MVS methods with our method on [Tanks and Temples dataset](https://www.tanksandtemples.org/), we release our SfM reconstuctions on this dataset. They are obtained by [COLMAP](https://colmap.github.io/) and can be downloaded from [here](https://drive.google.com/open?id=1DTnnmJAOGt7WPXSLMysMvPTy4CUZt_TU).
 ## Acknowledgements
