@@ -535,7 +535,7 @@ void ACMM::InuputInitialization(const std::string &dense_folder, const std::vect
             std::stringstream result_path;
             result_path << dense_folder << "/ACMM" << "/2333_" << std::setw(8) << std::setfill('0') << problem.src_image_ids[i];
             std::string result_folder = result_path.str();
-            std::string depth_path = result_folder + "/depths.dmb";
+            std::string depth_path = result_folder + suffix;
             cv::Mat_<float> depth;
             readDepthDmb(depth_path, depth);
             depths.push_back(depth);
