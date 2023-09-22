@@ -592,8 +592,14 @@ __global__ void RandomInitialization(cudaTextureObjects *texture_objects, Camera
             costs[center] = c_total_val / normalizing_factor;
             vecdiv4((&n_total_val), normalizing_factor);
             NormalizeVec3(&n_total_val);
-
-             costs[center] = ComputeMultiViewInitialCostandSelectedViews(texture_objects[0].images, cameras, p, plane_hypotheses[center], &selected_views[center], params);
+			// this is a totally wrong assigment, the plane_hypothesis[center] with normal (0, 0, 0) and the w equals the depth not the D
+            // besides, according to the paper, the pre_costs[center] should means the cost from the last lasyer
+            // however, this will make greate decrease in the performance, the result represented in the paper is not correct
+            // unfortunately, this is a key point in the paper
+            // after a lot of experiments, we found that this will make great changes to the Geometry Consistency
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // costs[center] = ComputeMultiViewInitialCostandSelectedViews(texture_objects[0].images, cameras, p, plane_hypotheses[center], &selected_views[center], params); //
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             pre_costs[center] = costs[center];
 
             float4 plane_hypothesis = n_total_val;
@@ -974,7 +980,14 @@ __device__ void CheckerboardPropagation(const cudaTextureObject_t *images, const
     cost_now /= weight_norm;
     costs[center] = cost_now;
     float depth_now = ComputeDepthfromPlaneHypothesis(cameras[0], plane_hypotheses[center], p);
-    float4 plane_hypotheses_now;
+    // the old version doesn't define the plane_hypotheses_now. 
+    // When flag[min_cost_idx] is false, this will generate totally wrong depth.
+    //////////////////////////////////
+    // float4 plane_hypotheses_now; //
+    //////////////////////////////////
+    // change:
+    float4 plane_hypotheses_now=plane_hypotheses[center]; 
+    //////////////////////////////////
     if (flag[min_cost_idx]) {
         float depth_before = ComputeDepthfromPlaneHypothesis(cameras[0], plane_hypotheses[positions[min_cost_idx]], p);
 

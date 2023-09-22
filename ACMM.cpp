@@ -692,7 +692,7 @@ void ACMM::CudaSpaceInitialization(const std::string &dense_folder, const Proble
         for (int col = 0; col < cameras[0].width; ++col) {
             for (int row = 0; row < cameras[0].height; ++row) {
                 int center = row * cameras[0].width + col;
-                float4 plane_hypothesis;
+                float4 plane_hypothesis;  // Normal is undefinded!! but used in RandomInitialization
                 plane_hypothesis.w = ref_depth(row, col);
                 plane_hypotheses_host[center] = plane_hypothesis;
             }
