@@ -536,7 +536,7 @@ __global__ void RandomInitialization(cudaTextureObjects *texture_objects, Camera
         costs[center] = ComputeMultiViewInitialCostandSelectedViews(texture_objects[0].images, cameras, p, plane_hypotheses[center], &selected_views[center], params);
     }
     else {
-        if(params.upsample) {
+        if(params.upsample) { // only run when params.hierarchy = true
             const float scale = 1.0 * params.scaled_cols / width;
             const float sigmad = 0.50;
             const float sigmar = 25.5;
@@ -572,8 +572,8 @@ __global__ void RandomInitialization(cudaTextureObjects *texture_objects, Camera
                     if (s_center >=  params.scaled_rows * params.scaled_cols) {
                         printf("Illegal: %d, %d, %f, %f (%d, %d)\n", r_x, r_y, o_x, o_y, params.scaled_cols,  params.scaled_rows);
                     }
-                    srcPix = scaled_plane_hypotheses[s_center].w;
-                    srcNorm = scaled_plane_hypotheses[s_center];
+                    srcPix = scaled_plane_hypotheses[s_center].w;  // get pre_cost
+                    srcNorm = scaled_plane_hypotheses[s_center];   // get pre_normal
                     // refIm
                     r_xs = p.x + i;
                     neighborPix = tex2D<float>(texture_objects[0].images[0], r_xs + 0.5f, r_ys + 0.5f);
@@ -592,8 +592,7 @@ __global__ void RandomInitialization(cudaTextureObjects *texture_objects, Camera
             costs[center] = c_total_val / normalizing_factor;
             vecdiv4((&n_total_val), normalizing_factor);
             NormalizeVec3(&n_total_val);
-
-             costs[center] = ComputeMultiViewInitialCostandSelectedViews(texture_objects[0].images, cameras, p, plane_hypotheses[center], &selected_views[center], params);
+            
             pre_costs[center] = costs[center];
 
             float4 plane_hypothesis = n_total_val;
@@ -759,7 +758,7 @@ __device__ void CheckerboardPropagation(const cudaTextureObject_t *images, const
         for (int i = 1; i < 11; ++i) {
             if (p.x < width - 3 - 2 * i) {
                 int pointTemp = right_far + 2 * i;
-                if (costMin < costs[pointTemp]) {
+                if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
                 }
@@ -777,14 +776,14 @@ __device__ void CheckerboardPropagation(const cudaTextureObject_t *images, const
         costMinPoint = up_near;
         for (int i = 0; i < 3; ++i) {
             if (p.y > 1 + i && p.x > i) {
-                int pointTemp = up_near - (1 + i) * width - i;
+                int pointTemp = up_near - (1 + i) * width - (i + 1);
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
                 }
             }
             if (p.y > 1 + i && p.x < width - 1 - i) {
-                int pointTemp = up_near - (1 + i) * width + i;
+                int pointTemp = up_near - (1 + i) * width + (i + 1);
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
@@ -803,14 +802,14 @@ __device__ void CheckerboardPropagation(const cudaTextureObject_t *images, const
         costMinPoint = down_near;
         for (int i = 0; i < 3; ++i) {
             if (p.y < height - 2 - i && p.x > i) {
-                int pointTemp = down_near + (1 + i) * width - i;
+                int pointTemp = down_near + (1 + i) * width - (i + 1);
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
                 }
             }
             if (p.y < height - 2 - i && p.x < width - 1 - i) {
-                int pointTemp = down_near + (1 + i) * width + i;
+                int pointTemp = down_near + (1 + i) * width + (i + 1);
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
@@ -829,14 +828,14 @@ __device__ void CheckerboardPropagation(const cudaTextureObject_t *images, const
         costMinPoint = left_near;
         for (int i = 0; i < 3; ++i) {
             if (p.x > 1 + i && p.y > i) {
-                int pointTemp = left_near - (1 + i) - i * width;
+                int pointTemp = left_near - (1 + i) - (i + 1) * width;
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
                 }
             }
             if (p.x > 1 + i && p.y < height - 1 - i) {
-                int pointTemp = left_near - (1 + i) + i * width;
+                int pointTemp = left_near - (1 + i) + (i + 1) * width;
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
@@ -855,14 +854,14 @@ __device__ void CheckerboardPropagation(const cudaTextureObject_t *images, const
         costMinPoint = right_near;
         for (int i = 0; i < 3; ++i) {
             if (p.x < width - 2 - i && p.y > i) {
-                int pointTemp = right_near + (1 + i) - i * width;
+                int pointTemp = right_near + (1 + i) - (i + 1) * width;
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
                 }
             }
             if (p.x < width - 2 - i && p.y < height - 1- i) {
-                int pointTemp = right_near + (1 + i) + i * width;
+                int pointTemp = right_near + (1 + i) + (i + 1) * width;
                 if (costs[pointTemp] < costMin) {
                     costMin = costs[pointTemp];
                     costMinPoint = pointTemp;
@@ -974,7 +973,7 @@ __device__ void CheckerboardPropagation(const cudaTextureObject_t *images, const
     cost_now /= weight_norm;
     costs[center] = cost_now;
     float depth_now = ComputeDepthfromPlaneHypothesis(cameras[0], plane_hypotheses[center], p);
-    float4 plane_hypotheses_now;
+    float4 plane_hypotheses_now=plane_hypotheses[center];
     if (flag[min_cost_idx]) {
         float depth_before = ComputeDepthfromPlaneHypothesis(cameras[0], plane_hypotheses[positions[min_cost_idx]], p);
 
